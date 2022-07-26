@@ -97,6 +97,8 @@ services:
 
     volumes:
       - ./keycloak/realm-export.json:/tmp/realm-export.json
+      - ./keycloak/disable-theme-cache.cli:/opt/jboss/startup-scripts/disable-theme-cache.cli
+
 
 volumes:
   mariadb:
