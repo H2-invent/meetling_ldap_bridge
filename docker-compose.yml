@@ -1,0 +1,98 @@
+version: '3.8'
+
+
+services:
+  traefik-ja:
+    image: "traefik:v2.5"
+
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      #- "--api.dashboard=true"
+
+      - "--providers.docker.exposedbydefault=false"
+
+      - "--entrypoints.unsecure.address=:80"
+      - "--entrypoints.web.address=:443"
+      # Global HTTP -> HTTPS
+      - "--entrypoints.unsecure.http.redirections.entryPoint.to=web"
+      - "--entrypoints.unsecure.http.redirections.entryPoint.scheme=https"
+      # SSL configuration
+
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=unsecure"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+      - "traefik.http.routers.traefik-ja.rule=Host(`traefik.${PUBLIC_URL}`)"
+      - "traefik.http.routers.traefik-ja.entrypoints=web"
+      - "traefik.http.routers.traefik-ja.service=api@internal"
+      - "traefik.http.routers.traefik-ja.middlewares=traefik-auth"
+
+
+
+
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Allows Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Mount the dynamic configuration
+      - ./traefik/certs/cert-traefik.yaml:/etc/traefik/dynamic/certs-traefik.yaml
+      # Mount the directory containing the certs
+      - ./traefik/certs:/etc/certs/
+
+  #Here is the mercure hub
+
+
+  db-ja:
+    image: mariadb:latest
+    hostname: ${RANDOMTAG}db-ja
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    environment:
+      MARIADB_ROOT_PASSWORD: test
+    volumes:
+      - mariadb:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+
+  keycloak-ja:
+    image: jboss/keycloak:latest
+
+    depends_on:
+      db-ja:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PW}
+      DB_VENDOR: mariadb
+      DB_ADDR: ${RANDOMTAG}db-ja
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: ${KEYCLOAK_PW}
+      DB_PORT: 3306
+      KEYCLOAK_IMPORT: /tmp/realm-export.json
+      KEYCLOAK_FRONTEND_URL: "${HTTP_METHOD}://keycloak.${PUBLIC_URL}/auth"
+      JAVA_OPTS_APPEND: "-Djboss.as.management.blocking.timeout=7200"
+      JDBC_PARAMS: "connectTimeout=30000"
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak-ja.tls=true"
+      - "traefik.http.routers.keycloak-ja.rule=Host(`keycloak.${PUBLIC_URL}`)"
+      - "traefik.http.routers.keycloak-ja.entrypoints=web"
+      - "traefik.http.services.keycloak-ja.loadbalancer.server.port=8080"
+
+    volumes:
+      - ./keycloak/realm-export.json:/tmp/realm-export.json
+
+volumes:
+  mariadb:
