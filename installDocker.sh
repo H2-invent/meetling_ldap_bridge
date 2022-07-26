@@ -110,7 +110,6 @@ export registerEmailAdress=$smtpFrom
 RANDOMTAG=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1);
 export RANDOMTAG
 
-chmod +x dockerupdate.sh
 
 if [ "$USELETSENCRYPT" == 'yes' ]; then
   docker-compose -f docker-compose_letsencrypt.yml build
