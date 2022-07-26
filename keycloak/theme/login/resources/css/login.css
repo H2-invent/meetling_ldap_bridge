@@ -10302,9 +10302,9 @@ form#kc-select-back-form div.login-pf-social-section {
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 .pf-c-button.pf-m-primary{
-  background-color:  #d19e47;
+  background-color:  #0057B0A6;
   background-image: unset;
-  border: solid #d19e47 1px;
+  border: solid #0057B0A6 1px;
   width: auto;
 }
 a{
@@ -10332,5 +10332,5 @@ padding-top: 50px;
 h1{
   font-family: "FrutigerLTW02-45Light", Arial, sans-serif;
   font-weight: normal;
-  color: #d19e47;
+  color: #0057B0A6;
 }

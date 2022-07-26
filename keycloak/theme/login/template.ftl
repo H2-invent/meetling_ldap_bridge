@@ -151,7 +151,7 @@
   </div>
 <div class="welcome-footer">
     <div class="welcome-content">
-        Okyrios - An Online Orthodox Christian Community
+        Die Meetling LDAP-Bridge. Verbindet was zusammengehört.
     </div>
 </div>
 </body>
