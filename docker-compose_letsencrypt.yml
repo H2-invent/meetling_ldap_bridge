@@ -83,14 +83,14 @@ services:
       DB_PASSWORD: ${KEYCLOAK_PW}
       DB_PORT: 3306
       KEYCLOAK_IMPORT: /tmp/realm-export.json
-      KEYCLOAK_FRONTEND_URL: "${HTTP_METHOD}://keycloak.${PUBLIC_URL}/auth"
+      KEYCLOAK_FRONTEND_URL: "${HTTP_METHOD}://${PUBLIC_URL}/auth"
       JAVA_OPTS_APPEND: "-Djboss.as.management.blocking.timeout=7200"
       JDBC_PARAMS: "connectTimeout=30000"
 
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak-ja.tls=true"
-      - "traefik.http.routers.keycloak-ja.rule=Host(`keycloak.${PUBLIC_URL}`)"
+      - "traefik.http.routers.keycloak-ja.rule=Host(`${PUBLIC_URL}`)"
       - "traefik.http.routers.keycloak-ja.entrypoints=web"
       - "traefik.http.services.keycloak-ja.loadbalancer.server.port=8080"
       - "traefik.http.routers.keycloak-ja.tls.certresolver=letsencrypt"

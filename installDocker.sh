@@ -13,7 +13,7 @@ else
   source $FILE
 fi
   USELETSENCRYPT=${USELETSENCRYPT:=yes}
-  read -p "Enter the environment yes/no[$USELETSENCRYPT]: " input
+  read -p "Do you want to use letsencryt? (If no, add your certs and key in traefik/certs)yes/no[$USELETSENCRYPT]: " input
   USELETSENCRYPT=${input:=$USELETSENCRYPT}
   sed -i '/USELETSENCRYPT/d' $FILE
   echo "USELETSENCRYPT=$USELETSENCRYPT" >> $FILE
