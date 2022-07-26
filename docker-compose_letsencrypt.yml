@@ -66,7 +66,7 @@ services:
 
 
   keycloak-ja:
-    image: jboss/keycloak:latest
+    build: .
 
     depends_on:
       db-ja:
@@ -97,7 +97,6 @@ services:
 
     volumes:
       - ./keycloak/realm-export.json:/tmp/realm-export.json
-      - ./keycloak/theme/ /opt/jboss/keycloak/themes/ldapbridge/
 
 volumes:
   mariadb:
