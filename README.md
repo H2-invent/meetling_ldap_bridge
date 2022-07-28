@@ -16,11 +16,13 @@ Folge den Links in der Ausgabe nach der Installation.
 Die LDAP-Bridge muss mit dem Admin-Account weiter konfiguriert werden. 
 
 Dabei sind folgende Schritte zu beachten
+### meetling LDAP-Bridge Seite
 1. Secret im Client H2-Invent neu generieren
 2. Clients -> RootUrl Consumer IDP Alias ersetzen
 3. Clients -> Valid Redirect URIs Consumer IDP Alias ersetzen
+4. evtl. LDAP einrichten
 
-Auf der Consumer Seite
+### Auf der Consumer Seite
 1. Neue IDP anlegen
 2. keycloak-oidc auswählen
 3. Alias und Name angeben
@@ -29,4 +31,7 @@ Auf der Consumer Seite
 6. Token Url: https://<domain.org>/auth/realms/meetling/protocol/openid-connect/token
 7. Client Authentication: Client Secret send as Basic
 8. Client ID und Client Secret aus der Meetling LDAP Bridge kopierne und einfügen
-9. IDP alias als parameter "idp_provider" im theme eintragen
+
+
+### Im Theme:
+1. IDP alias als parameter "idp_provider" im theme eintragen
